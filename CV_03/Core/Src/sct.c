@@ -12,9 +12,6 @@
 
 // Function definitions
 // Definice pinů pro SDI, CLK, /LA
-#define SDI_PIN  (1 << 0)
-#define CLK_PIN  (1 << 1)
-#define LA_PIN   (1 << 2)
 
 void sct_init(void){
 	sct_led(0);
