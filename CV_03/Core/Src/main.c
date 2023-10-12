@@ -111,6 +111,12 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  sct_value(__HAL_TIM_GET_COUNTER(&htim1));
 	  HAL_Delay(50);
+	  /*
+	   for (int i = 0; i < 1000; i++){
+	   sct_value(i*111);
+	   HAL_Delay(250)
+	   }
+	   */
   }
   /* USER CODE END 3 */
 }
