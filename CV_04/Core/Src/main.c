@@ -140,18 +140,36 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  /*sct_value(raw_pot*500.9/4096, raw_pot*8.5/4096);*/
-	  uint32_t voltage = 330 * (*VREFINT_CAL_ADDR) / raw_volt;
-	  int32_t temperature = (raw_temp - (int32_t)(*TEMP30_CAL_ADDR));
-	  temperature = temperature * (int32_t)(110 - 30);
-	  temperature = temperature / (int32_t)(*TEMP110_CAL_ADDR - *TEMP30_CAL_ADDR);
-	  temperature = temperature + 30;
-
-	  sct_value(voltage,0);
-	  HAL_Delay(10);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	static enum {SHOW_POT, SHOW_VOLT, SHOW_TEMP} state = SHOW_POT;
+	static uint32_t delay;
+	if(state == SHOW_POT){
+		sct_value(raw_pot*500.9/4096, raw_pot*8.5/4096);
+	}else if(state == SHOW_TEMP){
+		int32_t temperature = (raw_temp - (int32_t)(*TEMP30_CAL_ADDR));
+	    temperature = temperature * (int32_t)(110 - 30);
+		temperature = temperature / (int32_t)(*TEMP110_CAL_ADDR - *TEMP30_CAL_ADDR);
+		temperature = temperature + 30;
+		sct_value(temperature, raw_pot*9/4096);
+	}else if(state == SHOW_VOLT){
+		uint32_t voltage = 330 * (*VREFINT_CAL_ADDR) / raw_volt;
+		sct_value(voltage, raw_pot*9/4096);
+	}
+
+	if(HAL_GPIO_ReadPin(S1_GPIO_Port, S1_Pin) == 0){
+		state=SHOW_VOLT;
+		delay=HAL_GetTick();
+	}
+	else if(HAL_GPIO_ReadPin(S2_GPIO_Port, S2_Pin) == 0){
+		state=SHOW_TEMP;
+		delay=HAL_GetTick();
+	}
+	if(HAL_GetTick()>= delay + 1000){
+		state=SHOW_POT;
+	}
+
   }
   /* USER CODE END 3 */
 }
@@ -329,6 +347,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : S2_Pin S1_Pin */
+  GPIO_InitStruct.Pin = S2_Pin|S1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
