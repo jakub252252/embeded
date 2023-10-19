@@ -67,35 +67,34 @@ static void MX_ADC_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
-{
- /*raw_pot = HAL_ADC_GetValue(hadc);*/
- static uint8_t channel = 0;
- static uint32_t avg_pot;
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
+	/*raw_pot = HAL_ADC_GetValue(hadc);*/
+	static uint8_t channel = 0;
+	static uint32_t avg_pot;
 
- switch (channel){
- case 0: //Potentiometer channel
-	 raw_pot = avg_pot >> ADC_Q;
-	  avg_pot -= raw_pot;
-	  avg_pot += HAL_ADC_GetValue(hadc);
-	 break;
- case 1: //temperature channel
-	 raw_temp = HAL_ADC_GetValue(hadc);
-	 break;
- case 2: //Vrefint channel
-	 raw_volt = HAL_ADC_GetValue(hadc);
-	 break;
- default:
-	 break;
- }
+	switch (channel) {
+	case 0: //Potentiometer channel
+		raw_pot = avg_pot >> ADC_Q;
+		avg_pot -= raw_pot;
+		avg_pot += HAL_ADC_GetValue(hadc);
+		break;
+	case 1: //temperature channel
+		raw_temp = HAL_ADC_GetValue(hadc);
+		break;
+	case 2: //Vrefint channel
+		raw_volt = HAL_ADC_GetValue(hadc);
+		break;
+	default:
+		break;
+	}
 
- if (__HAL_ADC_GET_FLAG(hadc, ADC_FLAG_EOS)) {
-	 channel = 0;
- }
+	if (__HAL_ADC_GET_FLAG(hadc, ADC_FLAG_EOS)) {
+		channel = 0;
+	}
 
- else {
-	 channel++;
- }
+	else {
+		channel++;
+	}
 }
 
 /* USER CODE END 0 */
@@ -145,6 +144,8 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	static enum {SHOW_POT, SHOW_VOLT, SHOW_TEMP} state = SHOW_POT;
 	static uint32_t delay;
+
+
 	if(state == SHOW_POT){
 		sct_value(raw_pot*500.9/4096, raw_pot*8.5/4096);
 	}else if(state == SHOW_TEMP){
