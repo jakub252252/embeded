@@ -74,6 +74,7 @@ static void uart_process_command(char *cmd) {
 	char *token;
 	token = strtok(cmd, " ");
 
+	// -------------------------- HELLO command --------------------------
 	if (strcasecmp(token, "HELLO") == 0) { // budeme porovnavat token se slovem HELLO
 		printf("budliky OK\n"); //v pripade, ze bude odpovidat dame generujeme OK
 	} else if (strcasecmp(token, "LED1") == 0) { //if 0 command sedi
@@ -90,9 +91,9 @@ static void uart_process_command(char *cmd) {
 		else if (strcasecmp(token, "OFF") == 0)
 			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
 		printf("OK\n");
-		;
 
 
+		// -------------------------- HELLO command --------------------------
 	} else if (strcasecmp(token, "STATUS") == 0) {
 		if (HAL_GPIO_ReadPin(LED1_GPIO_Port, LED1_Pin))
 			printf("LED1 ON; ");
@@ -103,6 +104,9 @@ static void uart_process_command(char *cmd) {
 			printf("LED2 ON\n");
 		else
 			printf("LED2 OFF\n");
+
+
+		// -------------------------- HELLO command --------------------------
 	} else if (strcasecmp(token, "READ") == 0) {
 		token = strtok(NULL, " ");
 		uint16_t addr = atoi(token);
@@ -112,6 +116,9 @@ static void uart_process_command(char *cmd) {
 				&value, 1, 1000);  //cteni
 
 		printf("Adresa 0x%04X = 0x%02X\n", addr, value);
+
+
+		// -------------------------- HELLO command --------------------------
 	} else if (strcasecmp(token, "WRITE") == 0) {
 		token = strtok(NULL, " ");
 		uint16_t addr = atoi(token);
