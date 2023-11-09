@@ -326,8 +326,8 @@ void StartAcceleroTask(void const *argument) {
 	/* USER CODE BEGIN StartAcceleroTask */
 	/* Infinite loop */
 	for (;;) {
-		const int16_t msg[4] = { -2000, 0, 2000, 0 };
-		for (uint8_t i = 0; i < 4; i++) {
+		const int16_t msg[8] = { -2000, 0, -2000, 0, 2000, 0, 2000, 0 };
+		for (uint8_t i = 0; i < 8; i++) {
 			xQueueSend(xVisualQueueHandle, &msg[i], 0);
 			osDelay(100);
 		}
